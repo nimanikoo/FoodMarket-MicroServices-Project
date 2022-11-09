@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Restaurant.web;
 using Restaurant.web.Services;
 using Restaurant.web.Services.Interfaces;
@@ -5,7 +6,7 @@ using Restaurant.web.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.AddHttpClient<IProductServices, ProductService>();
 SD.ProductApiBase = builder.Configuration["ServiceUrls:ProductApi"];
@@ -27,6 +28,7 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters.NameClaimType = "role";
     options.Scope.Add("restaurant");
     options.SaveTokens = true;
+    options.RequireHttpsMetadata = false;
 });
 
 var app = builder.Build();
@@ -36,6 +38,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
