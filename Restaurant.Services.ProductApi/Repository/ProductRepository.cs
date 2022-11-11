@@ -5,7 +5,7 @@ using Restaurant.Services.ProductApi.Models;
 using Restaurant.Services.ProductApi.Models.Dtos;
 using System.Collections.Generic;
 
-namespace Restaurant.Services.ProductApi.Respository
+namespace Restaurant.Services.ProductApi.Repository
 {
     public class ProductRepository : IProductRepository
     {
@@ -23,7 +23,7 @@ namespace Restaurant.Services.ProductApi.Respository
             try
             {
                 Product product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
-                if(product == null)
+                if (product == null)
                 {
                     return false;
                 }
@@ -52,8 +52,8 @@ namespace Restaurant.Services.ProductApi.Respository
 
         public async Task<ProductDto> UpsertProduct(ProductDto productDto)
         {
-            Product product = _mapper.Map<ProductDto,Product>(productDto);
-            if(product.ProductId != 0)
+            Product product = _mapper.Map<ProductDto, Product>(productDto);
+            if (product.ProductId != 0)
             {
                 _context.Products.Update(product);
             }
@@ -62,7 +62,7 @@ namespace Restaurant.Services.ProductApi.Respository
                 _context.Products.Add(product);
             }
             await _context.SaveChangesAsync();
-            return _mapper.Map<Product,ProductDto>(product);
+            return _mapper.Map<Product, ProductDto>(product);
         }
     }
 }

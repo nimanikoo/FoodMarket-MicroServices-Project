@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Restaurant.Services.ProductApi.Data;
 using Restaurant.Services.ProductApi.Models;
 using Restaurant.Services.ProductApi.Models.Dtos;
-using Restaurant.Services.ProductApi.Respository;
+using Restaurant.Services.ProductApi.Repository;
 
 namespace Restaurant.Services.ProductApi.Controllers
 {

@@ -1,17 +1,14 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Restaurant.Services.ProductApi;
-using Restaurant.Services.ProductApi.Data;
-using Restaurant.Services.ProductApi.Repository;
+using Restaurant.Services.ShoppingCartApi.Data;
+using Restaurant.Services.ShoppingCartApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
 {
     options.Authority = "http://localhost:5123/";
@@ -20,6 +17,8 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
         ValidateAudience = false
     };
 });
+
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 //Add Authorization policies
 builder.Services.AddAuthorization(options =>
@@ -33,7 +32,6 @@ builder.Services.AddAuthorization(options =>
 
 //Add AutoMapper Config
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 //Add DataBase
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -42,10 +40,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     .GetConnectionString("DefaultConnection"));
 });
 
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Restaurant.Services.ShoppingCartApi", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -75,6 +73,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -84,6 +84,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
